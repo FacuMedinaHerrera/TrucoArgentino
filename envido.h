@@ -3,7 +3,7 @@
 #include <iostream>
 #include "Truco.h"
 
-Jugador quienGanaEnvido(Jugador j1, Jugador j2);
-int realEnvido();
-int faltaEnvido();
-int flor();
+int quienGanaEnvido(Jugador& j1, Jugador& ia);
+
+void cantarEnvido(Jugador& j1,Jugador& ia,int quienCanto);
+void cantarFlor();

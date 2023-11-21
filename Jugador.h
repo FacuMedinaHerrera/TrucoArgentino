@@ -15,11 +15,13 @@ public:
 	void repartir(Carta* carta);
 	bool flor();
 	vector<Carta*> mano();
+	void cambiarMano();
 	bool esMano();
+	void reestablecerPuntaje();
 private:
 	int puntaje;
 	bool buenas;
 	vector<Carta*> manoDelJugador;
-	bool _esMano = false;
+	bool _esMano=false;
 	
 };

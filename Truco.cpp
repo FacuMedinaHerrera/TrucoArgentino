@@ -3,8 +3,7 @@
 
 
 
-Truco::Truco() {
-	 
+Truco::Truco(Jugador& j1, Jugador& ia) : _j1(j1),_ia(ia){
 	ordenDeValor.push_back({ Carta(1, "Espada") });
 	ordenDeValor.push_back({ Carta(1, "Basto") });
 	ordenDeValor.push_back({ Carta(7, "Espada") });
@@ -35,12 +34,8 @@ void Truco::repartir(Jugador& j1, Jugador& ia) {
 	//Si bien mi mazo esta ordenado, elegire cartas al azar
 	//del mazo, lo cual simula la mezcla de este.
 	vector<Carta*>aRepartir;
-	
-
 	if (mazo.size()!=0) {
 		for (int i = 0; i < 6; i++) {
-			//establezco la semilla para rand();
-			srand(static_cast<unsigned int>(time(0)));
 			int indiceAleatorio = rand() % mazo.size();
 			//guardo la carta aleatoria elegida.
 			aRepartir.push_back(mazo[indiceAleatorio]);
@@ -58,9 +53,16 @@ void Truco::repartir(Jugador& j1, Jugador& ia) {
 	}
 	int j = 0;
 	while (j < 6) {
-		j1.repartir(aRepartir[j]);
-		ia.repartir(aRepartir[j+1]);
-		j += 2;
+		if (_j1.esMano()) {
+			_j1.repartir(aRepartir[j]);
+			_ia.repartir(aRepartir[j + 1]);
+			j += 2;
+		}
+		else {
+			_ia.repartir(aRepartir[j]);
+			_j1.repartir(aRepartir[j + 1]);
+			j += 2;
+		}
 	}
 }
 //agrego todas las cartas en una mano al mazo original para volver a repartir
@@ -68,4 +70,13 @@ void Truco::reestablecerMazo() {
 	for (int i = 0; i < pilaDescarte.size(); i++) {
 		mazo.push_back(pilaDescarte[i]);
 	}
+}
+int Truco::ronda() {
+	return _ronda;
+}
+void Truco::reestablecerJuego() {
+	reestablecerMazo();
+	_ronda = 1;
+	_j1.reestablecerPuntaje();
+	_ia.reestablecerPuntaje();
 }
