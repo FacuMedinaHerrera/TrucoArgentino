@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include "cartas.h"
+
 using namespace std;
 
 
@@ -18,10 +19,13 @@ public:
 	void cambiarMano();
 	bool esMano();
 	void reestablecerPuntaje();
+	void tirarCartaJugada(Carta* jugada);
+	
 private:
 	int puntaje;
 	bool buenas;
 	vector<Carta*> manoDelJugador;
 	bool _esMano=false;
+	bool ganoAnterior = false;
 	
 };

@@ -35,7 +35,7 @@ int main()
 	while (seguirJugando) {
 		quienSeraMano(j1, ia);
 		while (!(j1.puntos() <= 15 && j1.estaEnBuenas()) && !(ia.puntos() <= 15 && ia.estaEnBuenas())) {
-			truco.repartir(j1,ia);
+			truco.nuevaMano();
 			cout << "Estas son tus cartas:" << endl;
 			cout << "1. "<< * (j1.mano()[0]) <<" , 2. " << *(j1.mano()[1]) << " , 3. " << *(j1.mano()[2])<<endl;
 			if (j1.esMano()) {
@@ -55,6 +55,7 @@ int main()
 						}
 						cout << endl;
 						cin >> cartaAJugar;
+						truco.jugarCarta(j1, ia, j1.mano()[cartaAJugar-1], 0);
 					}
 				}
 			}

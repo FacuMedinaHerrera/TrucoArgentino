@@ -1,14 +1,8 @@
+#pragma once
 #include "envido.h"
+#include "probabilidadesIA.h"
 using namespace std;
-int obtenerMasAlto(vector<Carta*> mano) {
-	int max = mano[0]->obtenerValor();
-	for (int i = 1; i < mano.size(); i++) {
-		if (max < mano[i]->obtenerValor()) {
-			max = mano[i]->obtenerValor();
-		}
-	}
-	return max;
-}
+
 void sort(int arr[3]) {
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 2 - i; j++) {
@@ -168,61 +162,6 @@ int quienGanaEnvido(Jugador& j1, Jugador& j2) {
 
 }
 	
-	
-int respuesta(int cantOpciones) {//la cantidad maxima de opciones seran 5
-	int proba = rand() % 100;
-	if (cantOpciones == 2) {//sera solo por quiero/no quiero
-		if (proba < 50) {
-			return 0;
-		}
-		else {
-			return 1;
-		}
-	}
-	else if (cantOpciones == 3) {
-		if (proba < 45) {
-			return 0;
-		}
-		else if (proba >= 45 && proba < 90) {
-			return 1;
-		}
-		else {
-			return 2;
-		}
-	}
-	else if (cantOpciones == 4) {
-		if (proba < 40) {
-			return 0;
-		}
-		else if (proba >= 40  && proba <80) {
-			return 1;
-		}
-		else if (proba >=80 && proba < 95) {
-			return 2;
-		}
-		else {
-			return 3;
-		}
-	}
-	else {//5opciones
-		if (proba < 35) {
-			return 0;
-		}
-		else if (proba >= 35 && proba < 70) {
-			return 1;
-		}
-		else if (proba >= 70 && proba < 85) {
-			return 2;
-		}
-		else if(proba>=85 && proba < 95){
-			return 3;
-		}
-		else {
-			return 4;
-		}
-	}
-}
-
 void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 	cout << "Envido!" << endl;
 	if (quienCanto == 1) {//si el envido lo canta la IA
@@ -253,7 +192,7 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 		else if (eleccionJugador == 3) {//instancia envido envido.
 			cout << "Vos: Envido!" << endl;
 
-			int respuestaIA = respuesta(/*opciones*/4); //puede responder quiero no quiero real envido y falta envido.
+			int respuestaIA = respuestaEnvido(/*opciones*/4); //puede responder quiero no quiero real envido y falta envido.
 
 			if (respuestaIA==0) {//Quiere el envido envido
 				cout << "IA: Quiero!" << endl;
@@ -302,7 +241,7 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 				}
 				else {//canto la falta, instancia envido envido real envido falta envido.
 					cout << "Vos: Falta Envido!" << endl;
-					int IA_resFaltaEnv = respuesta(2);
+					int IA_resFaltaEnv = respuestaEnvido(2);
 					if (IA_resFaltaEnv) {//quiere la falta.
 						cout << "IA: Quiero!" << endl;
 						if (1 == quienGanaEnvido(jugador, ia)) {
@@ -386,7 +325,7 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 		else if (eleccionJugador == 4) {//instancia envido real envido
 			cout << "Vos: Real envido!" << endl;
 			//aca la IA solo tiene 3 respuestas: quiero, no quiero, o falta envido.
-			int respuestaIA2 = respuesta(3);
+			int respuestaIA2 = respuestaEnvido(3);
 			if (respuestaIA2) {
 				cout << "IA: No quiero" << endl;
 				jugador.sumarPuntos(2);
@@ -453,7 +392,7 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 		}
 		else {//canto falta envido. Instancia envido falta envido.
 			cout << "Vos: Falta envido!" << endl;
-			int respuestaIA3 = respuesta(2);
+			int respuestaIA3 = respuestaEnvido(2);
 			if (respuestaIA3) {
 				cout << "IA: No quiero" << endl;
 				jugador.sumarPuntos(2);
@@ -491,7 +430,7 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 		}
 	}
 	else {//el que canto el envido fue el jugador
-		int eleccionIA = respuesta(5);
+		int eleccionIA = respuestaEnvido(5);
 		//IA quiere
 		if (eleccionIA == 0) {
 			cout << "IA: Quiero!" << endl;
@@ -545,7 +484,7 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 			//canto Real Envido, instancia envido envido real envido.
 			else if (eleccionJugador == 3) {
 				cout << "Vos: Real Envido!" << endl;
-				int respuestaIA = respuesta(3);
+				int respuestaIA = respuestaEnvido(3);
 				//IA no quiere
 				if (respuestaIA == 0) {
 					cout << "IA: No quiero!" << endl;
@@ -612,7 +551,7 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 			//Canto falta Envido, instancia envido envido falta envido.
 			else/*eleccionJugador == 4*/ {
 				cout << "Vos: Falta Envido!" << endl;
-				int respuestaIA2 = respuesta(2);
+				int respuestaIA2 = respuestaEnvido(2);
 				// IA quiere la falta
 				if (respuestaIA2 == 0) {
 					cout << "IA: Quiero!" << endl;
@@ -684,7 +623,7 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 			//jugador canta falta envido, es instancia envido real envido falta envido
 			else {
 				cout << "Vos: Falta envido." << endl;
-				int respuestaIA2 = respuesta(2);
+				int respuestaIA2 = respuestaEnvido(2);
 
 				// IA quiere la falta
 				if (respuestaIA2 == 0) {

@@ -1,5 +1,9 @@
+#pragma once
 #include <iostream>
 #include "Truco.h"
+#include "probabilidadesIA.h"
+#include "envido.h"
+
 
 
 
@@ -65,10 +69,19 @@ void Truco::repartir(Jugador& j1, Jugador& ia) {
 		}
 	}
 }
-//agrego todas las cartas en una mano al mazo original para volver a repartir
+//agrego todas las cartas en una mano al mazo original para volver a repartir y limpio las manos de los jugadores
 void Truco::reestablecerMazo() {
 	for (int i = 0; i < pilaDescarte.size(); i++) {
 		mazo.push_back(pilaDescarte[i]);
+	}
+	for (int j = 0; j < _j1.mano().size(); j++) {
+		_j1.mano().pop_back();
+	}
+	for (int k = 0; k < _ia.mano().size(); k++) {
+		_ia.mano().pop_back();
+	}
+	for (int x = 0; x < pilaDescarte.size(); x++) {
+		pilaDescarte.pop_back();
 	}
 }
 int Truco::ronda() {
@@ -79,4 +92,182 @@ void Truco::reestablecerJuego() {
 	_ronda = 1;
 	_j1.reestablecerPuntaje();
 	_ia.reestablecerPuntaje();
+}
+void Truco::nuevaMano() {
+	estanEnTruco = false;
+	estanEnReTruco = false;
+	estanEnVale4 = false;
+	_ronda = 1;
+	reestablecerMazo();
+	repartir(_j1, _ia);
+
+}
+
+void Truco::jugarCarta(Jugador& j1, Jugador& ia,Carta* aJugar, int quienLaJuega) {
+	//el que juega la carta es el jugador
+	if (quienLaJuega == 0) {
+		//si la ronda es la primera, y el jugador es mano, eso quiere decir que no se jugo carta
+		//Se juega la carta y se da una respuesta de la IA.
+
+		if (_ronda == 1 && j1.esMano()) {
+			cout << "Tu juegas:" << *aJugar << endl;
+			j1.tirarCartaJugada(aJugar);
+			int respuestaIA=respuestaPrimeraMano(); // las posibles respuestas son: Jugar una carta, cantar envido, cantar truco.
+			//se canta envido
+			if (respuestaIA == 1) {
+				cout << "IA: Fuiste a la pesca?... Envido!" << endl;
+				cantarEnvido(j1, ia, 1);
+				//luego del envido la IA juega una carta.
+				int cartaAJugar =eleccionDeCarta(ia.mano());
+				cout << "IA juega: " << *(ia.mano()[cartaAJugar])<< endl;
+				ia.tirarCartaJugada(ia.mano()[cartaAJugar]);
+				_ronda++;
+			}
+			//se tira una carta
+			else if (respuestaIA == 2) {
+				int cartaAJugar = eleccionDeCarta(ia.mano());
+				cout << "IA juega: " << *(ia.mano()[cartaAJugar]) << endl;
+				ia.tirarCartaJugada(ia.mano()[cartaAJugar]);
+				_ronda++;
+			}
+			//IA canta truco
+			else {
+				cantarTruco(j1, ia, 1);
+				//una vez que se canta el truco y se define que sucedio veo si se tira un carta o no.
+				//con que estemos en alguna instancia de truco, continua el juego.
+				if (estanEnTruco || estanEnReTruco || estanEnVale4) {
+					int cartaAJugar = eleccionDeCarta(ia.mano());
+					cout << "IA juega: " << *(ia.mano()[cartaAJugar]) << endl;
+					ia.tirarCartaJugada(ia.mano()[cartaAJugar]);
+					_ronda++;
+				}
+				else {
+					//como no se quiso el truco, termina la mano.
+					nuevaMano();
+				}
+			}
+		}
+		//esto significa que la primera carta la jugo la IA
+		else if (_ronda == 1 && !j1.esMano()) {
+			cout << "Tu juegas: " << *aJugar<<endl;
+			j1.tirarCartaJugada(aJugar);
+		}
+		else if (_ronda == 2 && j1.esMano()) {
+
+		}
+	}
+	//juega la carta la IA
+	else {
+
+	}
+}
+
+
+void Truco::cantarTruco(Jugador& j1, Jugador& ia, int quienCanta) {
+	//si canta la IA
+	if (quienCanta == 1) {
+		cout << "IA: Truco!" << endl;
+		cout << "Que desea hacer?" << endl;
+		cout << "1. Quiero 2. No quiero 3.Retruco" << endl;
+		int respuesta;
+		cin >> respuesta;
+		while (1 > respuesta && respuesta > 3) {
+			cout << "Entrada invalida, ingrese nuevamente" << endl;
+			cin >> respuesta;
+		}
+
+		if (respuesta == 1) {
+			cout << "Vos: Quiero." << endl;
+			estanEnTruco = true;
+		}
+		else if (respuesta == 2) {
+			cout << "Vos: No quiero." << endl;
+			ia.sumarPuntos(1);
+			cout << "Vos: " << j1.puntos() << ", IA: " << ia.puntos() << endl;
+		}
+		else {
+			cout << "Vos: Quiero retruco." << endl;
+			//la IA Tiene 3 respuestas: Quiero, no quiero, quiero vale 4.
+			int respuestaIA = respuestaTruco(3);
+			if (respuestaIA == 1) {
+				cout << "IA: Quiero!" << endl;
+				estanEnReTruco = true;
+			}
+			else if (respuestaIA == 2) {
+				cout << "IA: No, no quiero." << endl;
+				j1.sumarPuntos(2);
+				cout << "Vos: " << j1.puntos() << ", IA: " << ia.puntos() << endl;
+			}
+			else {
+				cout << "IA: Quiero vale 4, te animas?" << endl;
+				cout << "Que desea hacer?" << endl;
+				cout << "1. Quiero 2.No quiero" << endl;
+				cin >> respuesta;
+				while (1 > respuesta && respuesta > 2) {
+					cout << "Entrada invalida, ingrese nuevamente" << endl;
+					cin >> respuesta;
+				}
+
+				if (respuesta == 1) {
+					cout << "Vos: Quiero, me la banco." << endl;
+					estanEnVale4 = true;
+				}
+				else if (respuesta == 2) {
+					cout << "Vos: Ni loco, no quiero" << endl;
+					ia.sumarPuntos(3);
+					cout << "Vos: " << j1.puntos() << ", IA: " << ia.puntos() << endl;
+				}
+			}
+		}
+	}
+	//canta el jugador
+	else {
+		cout << "Vos: Truco..." << endl;
+		//la IA puede responder quiero, no quiero, o reTruco
+		int respuestaIA = respuestaTruco(3);
+		if (respuestaIA == 1) {
+			cout << "IA: Quiero" << endl;
+			estanEnTruco = true;
+		}
+		else if(respuestaIA==2) {
+			cout << "IA: No quiero" << endl;
+			j1.sumarPuntos(1);
+			cout << "Vos: " << j1.puntos() << ", IA: " << ia.puntos() << endl;
+		}
+		else {
+			cout << "IA: Quiero re truco!" << endl;
+			//el jugador puede responder quiero, no quiero o quiero vale 4.
+			cout << "Que desea hacer?" << endl;
+			cout << "1. Quiero 2. No quiero 3.Vale 4" << endl;
+			int respuesta;
+			cin >> respuesta;
+			while (1 > respuesta && respuesta > 3) {
+				cout << "Entrada invalida, ingrese nuevamente" << endl;
+				cin >> respuesta;
+			}
+			if (respuesta == 1) {
+				cout << "Vos: Quiero." << endl;
+				estanEnVale4 == true;
+			}
+			else if (respuesta == 2) {
+				cout << "Vos: No quiero." << endl;
+				ia.sumarPuntos(2);
+				cout << "Vos: " << j1.puntos() << ", IA: " << ia.puntos() << endl;
+			}
+			else {
+				cout << "Vos: Quiero vale 4" << endl;
+				respuestaIA = respuestaTruco(2);
+				if (respuestaIA == 1) {
+					cout << "IA: Quiero." << endl;
+					estanEnVale4 = true;
+				}
+				else if (respuestaIA == 2) {
+					cout << "IA: No quiero." << endl;
+					j1.sumarPuntos(3);
+					cout << "Vos: " << j1.puntos() << ", IA: " << ia.puntos() << endl;
+
+				}
+			}
+		}
+	}
 }

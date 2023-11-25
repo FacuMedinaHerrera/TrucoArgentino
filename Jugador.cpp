@@ -38,3 +38,16 @@ bool Jugador::esMano() {
 void Jugador::reestablecerPuntaje() {
 	puntaje = 0;
 }
+void Jugador::tirarCartaJugada(Carta* jugada) {
+	bool encontre = false;
+	int i = 0;
+	for (i; i < this->mano().size() && !encontre; i++) {
+		if (jugada->obtenerValor() == (*this).mano()[i]->obtenerValor()) {
+			encontre == true;
+		}
+	}
+	Carta* aux = this->mano()[i];
+	this->mano()[i] = this->mano().back();
+	this->mano()[this->mano().size() - 1] = aux;
+	manoDelJugador.pop_back();
+}
