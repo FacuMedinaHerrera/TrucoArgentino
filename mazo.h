@@ -1,8 +1,10 @@
 #pragma once
 #include <windows.h>
 #include <iostream>
-#include "cartas.h"
 #include<vector>
+#include "cartas.h"
+
+
 using namespace std;
 
 class Mazo {

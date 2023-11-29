@@ -1,6 +1,5 @@
-#pragma once
 #include "envido.h"
-#include "probabilidadesIA.h"
+
 using namespace std;
 
 void sort(int arr[3]) {
@@ -63,12 +62,12 @@ int quienGanaEnvido(Jugador& j1, Jugador& j2) {
 			arr[0] = 0;
 		}
 		if (j1.mano()[1]->obtenerValor() >= 10) {
-			arr[0] = 0;
+			arr[1] = 0;
 		}
 		if (j1.mano()[2]->obtenerValor() >= 10) {
-			arr[0] = 0;
+			arr[2] = 0;
 		}
-		sumaJugador1 = max(arr[0], arr[1], arr[2]);
+		sumaJugador1 = max(arr[0], max(arr[1], arr[2]));
 	}
 	//ahora para j2:
 	if (j2.mano()[0]->obtenerPalo() == j2.mano()[1]->obtenerPalo() && j2.mano()[0]->obtenerPalo() == j2.mano()[2]->obtenerPalo()) {
@@ -114,19 +113,20 @@ int quienGanaEnvido(Jugador& j1, Jugador& j2) {
 			arr[0] = 0;
 		}
 		if (j2.mano()[1]->obtenerValor() >= 10) {
-			arr[0] = 0;
+			arr[1] = 0;
 		}
 		if (j2.mano()[2]->obtenerValor() >= 10) {
-			arr[0] = 0;
+			arr[2] = 0;
 		}
-		sumaJugador2 = max(arr[0], arr[1], arr[2]);
+		sumaJugador2 = max(arr[0], max(arr[1], arr[2]));
 	}
 	//entonces, quien gana el envido?
 	if (sumaJugador1 > sumaJugador2) {
 		if (j1.esMano()) {
 			cout << "Vos: " << sumaJugador1 << endl;
 			cout << "IA: Son Buenas..." << endl;
-		}else{
+		}
+		else {
 			cout << "IA: " << sumaJugador2 << endl;
 			cout << "Vos: " << sumaJugador1 << " son mejores!" << endl;
 		}
@@ -161,10 +161,12 @@ int quienGanaEnvido(Jugador& j1, Jugador& j2) {
 	}
 
 }
-	
-void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
-	cout << "Envido!" << endl;
-	if (quienCanto == 1) {//si el envido lo canta la IA
+
+void cantarEnvido(Jugador& jugador, Jugador& ia, string quienCanto) {
+
+	//si el envido lo canta la IA
+	if (quienCanto == "ia") {
+		cout << "IA: Envido!" << endl;
 		int eleccionJugador;
 		cout << "Cual es su respuesta?" << endl;
 		cout << "1. Quiero 2. No quiero 3.Envido 4. Real Envido 5.Falta Envido" << endl;
@@ -194,7 +196,7 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 
 			int respuestaIA = respuestaEnvido(/*opciones*/4); //puede responder quiero no quiero real envido y falta envido.
 
-			if (respuestaIA==0) {//Quiere el envido envido
+			if (respuestaIA == 0) {//Quiere el envido envido
 				cout << "IA: Quiero!" << endl;
 				if (1 == quienGanaEnvido(jugador, ia)) {
 					jugador.sumarPuntos(4);
@@ -205,7 +207,7 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 					cout << "Vos: " << jugador.puntos() << ", IA: " << ia.puntos() << endl;
 				}
 			}
-			else if(respuestaIA==1) {//No quiere
+			else if (respuestaIA == 1) {//No quiere
 				cout << "IA: No quiero!" << endl;
 				jugador.sumarPuntos(2);
 				cout << "Vos: " << jugador.puntos() << ", IA: " << ia.puntos() << endl;
@@ -231,13 +233,13 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 					}
 					else {
 						ia.sumarPuntos(7);
-						cout<<"Vos: " << jugador.puntos() << ", IA: " << ia.puntos() << endl;
+						cout << "Vos: " << jugador.puntos() << ", IA: " << ia.puntos() << endl;
 					}
 				}
 				else if (eleccion2 == 2) {//no se quiere el envido envido real envido
-						cout << "Vos: No quiero" << endl;
-						ia.sumarPuntos(4);
-						cout << "Vos: " << jugador.puntos() << ", IA: " << ia.puntos() << endl;
+					cout << "Vos: No quiero" << endl;
+					ia.sumarPuntos(4);
+					cout << "Vos: " << jugador.puntos() << ", IA: " << ia.puntos() << endl;
 				}
 				else {//canto la falta, instancia envido envido real envido falta envido.
 					cout << "Vos: Falta Envido!" << endl;
@@ -281,7 +283,7 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 				cout << "Cual es su respuesta?" << endl;
 				cout << "1. Quiero 2. No quiero" << endl;
 				cin >> eleccion3;
-				while (1 != eleccion3 || eleccion3 != 2) {
+				while (1 > eleccion3 && eleccion3 > 2) {
 					cout << "Entrada no valida, ingrese nuevamente su respuesta" << endl;
 					cin >> eleccion3;
 				}
@@ -349,7 +351,7 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 				cout << "Cual es su respuesta?" << endl;
 				cout << "1. Quiero 2. No quiero" << endl;
 				cin >> eleccion4;
-				while (1 != eleccion4 || eleccion4 != 2) {
+				while (1 > eleccion4 && eleccion4 > 2) {
 					cout << "Entrada no valida, ingrese nuevamente su respuesta" << endl;
 					cin >> eleccion4;
 				}
@@ -429,7 +431,9 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 			}
 		}
 	}
-	else {//el que canto el envido fue el jugador
+	//el que canto el envido fue el jugador
+	else {
+		cout << "Vos: Envido!" << endl;
 		int eleccionIA = respuestaEnvido(5);
 		//IA quiere
 		if (eleccionIA == 0) {
@@ -439,7 +443,7 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 				cout << "Vos: " << jugador.puntos() << ", IA: " << ia.puntos() << endl;
 			}
 			else {
-				jugador.sumarPuntos(2);
+				ia.sumarPuntos(2);
 				cout << "Vos: " << jugador.puntos() << ", IA: " << ia.puntos() << endl;
 			}
 		}
@@ -598,7 +602,7 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 			cout << "Cual es su respuesta?" << endl;
 			cout << "1. Quiero 2. No quiero 3. Falta envido" << endl;
 			cin >> respuestaJugador;
-			while (1>respuestaJugador && respuestaJugador>3) {
+			while (1 > respuestaJugador && respuestaJugador > 3) {
 				cout << "Entrada no valida, ingrese nuevamente su respuesta" << endl;
 				cin >> respuestaJugador;
 			}
@@ -617,8 +621,9 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 			//jugador no quiere
 			else if (respuestaJugador == 2) {
 				ia.sumarPuntos(2);
+				cout << "Vos: No quiero ni ahi." << endl;
 				cout << "Vos: " << jugador.puntos() << ", IA: " << ia.puntos() << endl;
-				
+
 			}
 			//jugador canta falta envido, es instancia envido real envido falta envido
 			else {
@@ -664,7 +669,7 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 			}
 		}
 		//eleccionIA==4. IA canta falta envido. Instancia envido falta envido.
-		else{
+		else {
 			cout << "IA: Falta envido!" << endl;
 			int respuestaJugador2;
 			cout << "Cual es su respuesta?" << endl;
@@ -675,7 +680,7 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 				cin >> respuestaJugador2;
 			}
 			//Jugador no quiere la falta
-			if (respuestaJugador2== 2) {
+			if (respuestaJugador2 == 2) {
 				cout << "Vos: No quiero" << endl;
 				ia.sumarPuntos(2);
 				cout << "Vos: " << jugador.puntos() << ", IA: " << ia.puntos() << endl;
@@ -711,6 +716,6 @@ void cantarEnvido(Jugador& jugador,Jugador& ia,int quienCanto) {
 				}
 			}
 		}
-		
+
 	}
 }

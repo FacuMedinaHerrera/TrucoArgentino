@@ -1,8 +1,7 @@
 #pragma once
-#include <windows.h>
-#include <iostream>
-#include <vector>
 #include "cartas.h"
+
+
 
 using namespace std;
 
@@ -20,12 +19,23 @@ public:
 	bool esMano();
 	void reestablecerPuntaje();
 	void tirarCartaJugada(Carta* jugada);
-	
+	bool gano();
+	void cambiarGanadorRonda();
+	bool ganoPrimera();
+	void ganoMano(int rondaACambiar);
+	void resetManos();
+	bool cantoAnteriorTruco = false;
+
 private:
 	int puntaje;
 	bool buenas;
 	vector<Carta*> manoDelJugador;
-	bool _esMano=false;
-	bool ganoAnterior = false;
-	
+	bool _esMano = false;
+	bool _ganoAnterior = false;
+	bool _ganoPrimera = false;
+	bool _ganoSegunda = false;
+	bool _ganoTercera = false;
+
+
+
 };
