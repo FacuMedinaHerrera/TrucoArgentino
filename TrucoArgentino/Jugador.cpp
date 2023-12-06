@@ -26,7 +26,7 @@ bool Jugador::flor() {
 	}
 	return res;
 }
-vector<Carta*> Jugador::mano() {
+vector<Carta*>& Jugador::mano() {
 	return manoDelJugador;
 }
 void Jugador::cambiarMano() {
@@ -81,4 +81,9 @@ void Jugador::resetManos() {
 	_ganoPrimera = false;
 	_ganoSegunda = false;
 	_ganoTercera = false;
+}
+void Jugador::vaciarManoJugador() {
+	for (int i = 0; i < manoDelJugador.size(); i++){
+		manoDelJugador.pop_back();
+	}
 }

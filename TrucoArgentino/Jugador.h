@@ -14,7 +14,7 @@ public:
 	void sumarPuntos(int puntos);
 	void repartir(Carta* carta);
 	bool flor();
-	vector<Carta*> mano();
+	vector<Carta*>& mano();
 	void cambiarMano();
 	bool esMano();
 	void reestablecerPuntaje();
@@ -25,6 +25,7 @@ public:
 	void ganoMano(int rondaACambiar);
 	void resetManos();
 	bool cantoAnteriorTruco = false;
+	void vaciarManoJugador();
 
 private:
 	int puntaje;

@@ -6,6 +6,8 @@
 
 #include <iostream>
 #include <Windows.h>
+#include <limits>
+#include <algorithm>
 #include "cartas.h"
 #include "Truco.h"
 #include "envido.h"

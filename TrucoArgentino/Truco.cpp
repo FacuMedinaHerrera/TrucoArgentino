@@ -60,13 +60,16 @@ void Truco::reestablecerMazo() {
 	for (int i = 0; i < pilaDescarte.size(); i++) {
 		mazo.push_back(pilaDescarte[i]);
 	}
-	for (int j = 0; j < _j1.mano().size(); j++) {
+	int sizeJ1 = _j1.mano().size();
+	for (int j = 0; j < sizeJ1; j++) {
 		_j1.mano().pop_back();
 	}
-	for (int k = 0; k < _ia.mano().size(); k++) {
+	int sizeIA = _ia.mano().size();
+	for (int k = 0; k < sizeIA; k++) {
 		_ia.mano().pop_back();
 	}
-	for (int x = 0; x < pilaDescarte.size(); x++) {
+	int sizeDescarte = pilaDescarte.size();
+	for (int x = 0; x <sizeDescarte; x++) {
 		pilaDescarte.pop_back();
 	}
 }
@@ -84,6 +87,14 @@ void Truco::reestablecerJuego() {
 	_ronda = 1;
 	_j1.reestablecerPuntaje();
 	_ia.reestablecerPuntaje();
+	_j1.resetManos();
+	_ia.resetManos();
+	if (_ia.esMano()) {
+		_ia.cambiarMano();
+	}
+	if (_j1.esMano()) {
+		_j1.cambiarMano();
+	}
 }
 
 void Truco::nuevaMano() {
@@ -100,8 +111,10 @@ void Truco::nuevaMano() {
 }
 
 void Truco::quienGana(Jugador& j1, Carta* cartaJ1, Jugador& ia, Carta* cartaIA) {
+	int valorRelativoJ1 = cartaJ1->obtenerValorRelativo();
+	int valorRelativoIA = cartaIA->obtenerValorRelativo();
 
-	if (cartaJ1->obtenerValorRelativo() < cartaIA->obtenerValorRelativo()) {
+	if (valorRelativoJ1 < valorRelativoIA) {
 		if (!j1.gano() && !ia.gano()) {
 			j1.cambiarGanadorRonda();
 		}
@@ -113,7 +126,7 @@ void Truco::quienGana(Jugador& j1, Carta* cartaJ1, Jugador& ia, Carta* cartaIA) 
 			ia.cambiarGanadorRonda();
 		}
 	}
-	else if (cartaJ1->obtenerValorRelativo() > cartaIA->obtenerValorRelativo()) {
+	else if (valorRelativoJ1 > valorRelativoIA) {
 		if (!j1.gano() && !ia.gano()) {
 			ia.cambiarGanadorRonda();
 		}
@@ -138,7 +151,7 @@ void Truco::quienGana(Jugador& j1, Carta* cartaJ1, Jugador& ia, Carta* cartaIA) 
 		}
 		esParda = true;
 	}
-	if (_ronda == 1) {
+	if (_ronda == 1 && !esParda) {
 		if (j1.gano()) {
 			j1.ganoMano(1);
 		}
@@ -146,7 +159,7 @@ void Truco::quienGana(Jugador& j1, Carta* cartaJ1, Jugador& ia, Carta* cartaIA) 
 			ia.ganoMano(1);
 		}
 	}
-	else if (_ronda == 2) {
+	else if (_ronda == 2 && !esParda) {
 		if (j1.gano()) {
 			j1.ganoMano(2);
 		}
@@ -154,7 +167,7 @@ void Truco::quienGana(Jugador& j1, Carta* cartaJ1, Jugador& ia, Carta* cartaIA) 
 			ia.ganoMano(2);
 		}
 	}
-	else {
+	else if(!esParda){
 		if (j1.gano()) {
 			j1.ganoMano(3);
 		}
@@ -164,6 +177,7 @@ void Truco::quienGana(Jugador& j1, Carta* cartaJ1, Jugador& ia, Carta* cartaIA) 
 	}
 }
 
+//falta implementar el resto de rondas:
 void Truco::jugarCarta(Jugador& j1, Jugador& ia, Carta* aJugar, string quienLaJuega) {
 	//el que juega la carta es el jugador
 	if (quienLaJuega == "jugador") {
@@ -221,12 +235,13 @@ void Truco::jugarCarta(Jugador& j1, Jugador& ia, Carta* aJugar, string quienLaJu
 			cout << "Tu juegas: " << *aJugar << endl;
 			j1.tirarCartaJugada(aJugar);
 		}
+		//Para ronda 2, fijarse ademas si estan en parda para ver quien gano.
 		else if (_ronda == 2 && j1.esMano()) {
 
 		}
 	}
 	//juega la carta la IA
-	//no imprimir las cartas aca!!
+	
 	else {
 		ia.tirarCartaJugada(aJugar);
 	}
@@ -294,6 +309,7 @@ void Truco::cantarReTruco(Jugador& j1, Jugador& ia, string quienCanta) {
 		else if (respuestaIA == 2) {
 			cout << "IA: No quiero" << endl;
 			j1.sumarPuntos(2);
+			estanEnTruco = false;
 			cout << "Vos: " << j1.puntos() << ", IA: " << ia.puntos() << endl;
 		}
 		else {
@@ -321,6 +337,7 @@ void Truco::cantarReTruco(Jugador& j1, Jugador& ia, string quienCanta) {
 		else if (respuesta == 2) {
 			cout << "Vos: No quiero." << endl;
 			ia.sumarPuntos(2);
+			estanEnTruco = false;
 			cout << "Vos: " << j1.puntos() << ", IA: " << ia.puntos() << endl;
 		}
 		else {
@@ -338,11 +355,14 @@ void Truco::cantarVale4(Jugador& j1, Jugador& ia, string quienCanta) {
 			cout << "IA: Quiero." << endl;
 			j1.cantoAnteriorTruco = true;
 			estanEnReTruco = false;
+			estanEnTruco = false;
 			estanEnVale4 = true;
 		}
 		else if (respuestaIA == 2) {
 			cout << "IA: No, no quiero..." << endl;
 			j1.sumarPuntos(3);
+			estanEnTruco = false;
+			estanEnReTruco = false;
 			cout << "Vos: " << j1.puntos() << ", IA: " << ia.puntos() << endl;
 		}
 	}
@@ -363,10 +383,13 @@ void Truco::cantarVale4(Jugador& j1, Jugador& ia, string quienCanta) {
 			ia.cantoAnteriorTruco = true;
 			estanEnVale4 = true;
 			estanEnReTruco = false;
+			estanEnTruco = false;
 		}
 		else if (respuesta == 2) {
 			cout << "Vos: No quiero." << endl;
 			ia.sumarPuntos(3);
+			estanEnTruco = false;
+			estanEnReTruco = false;
 			cout << "Vos: " << j1.puntos() << ", IA: " << ia.puntos() << endl;
 		}
 	}
