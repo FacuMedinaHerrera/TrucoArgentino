@@ -198,15 +198,8 @@ void Truco::jugarCarta(Jugador& j1, Jugador& ia, Carta* aJugar, string quienLaJu
 				ia.tirarCartaJugada(ia.mano()[cartaAJugar]);
 				_ronda++;
 			}
-			else if (respuestaIA == 1 && (j1.puntos() != 0||ia.puntos()!=0)) {
-				int cartaAJugar = eleccionDeCarta(ia.mano());
-				cout << "IA juega: " << *(ia.mano()[cartaAJugar]) << endl;
-				this->quienGana(j1, aJugar, ia, ia.mano()[cartaAJugar]);
-				ia.tirarCartaJugada(ia.mano()[cartaAJugar]);
-				_ronda++;
-			}
 			//se tira una carta
-			else if (respuestaIA == 2) {
+			else if (respuestaIA == 2||respuestaIA==1) {
 				int cartaAJugar = eleccionDeCarta(ia.mano());
 				cout << "IA juega: " << *(ia.mano()[cartaAJugar]) << endl;
 				this->quienGana(j1, aJugar, ia, ia.mano()[cartaAJugar]);
@@ -236,14 +229,40 @@ void Truco::jugarCarta(Jugador& j1, Jugador& ia, Carta* aJugar, string quienLaJu
 			j1.tirarCartaJugada(aJugar);
 		}
 		//Para ronda 2, fijarse ademas si estan en parda para ver quien gano.
-		else if (_ronda == 2 && j1.esMano()) {
+		else if (_ronda == 2||_ronda==3) {
+			cout << "Tu juegas: " << *aJugar << endl;
+			j1.tirarCartaJugada(aJugar);
+			
+			//Si estamos en alguna instancia de truco, Dependiendo de quien haya cantado, la ia puede cantar truco o no. Si no, puede cantar normalmente, o jugar.
+			int respuestaIA = decisionSegundaMano();
 
+			//IA canta algun truco.
+			if (respuestaIA == 2) {
+				if (estanEnAlgunaInstanciaTruco()) {
+					if (estanEnInstanciaTruco())cantarReTruco(j1, ia, "ia");
+					if (estanEnInstanciaReTruco())cantarVale4(j1, ia, "ia");
+				}
+				else {
+					cantarTruco(j1, ia, "ia");
+				}
+			}
+			//luego de cantar algo, la ia debe jugar una carta en caso de llegar a una instancia de truco.
+			if ((estanEnAlgunaInstanciaTruco()&&respuestaIA==2)||respuestaIA==1) {
+				Carta* cartaIA = ia.mano()[eleccionDeCarta(ia.mano())];
+				cout << "IA juega: " << *cartaIA << endl;
+				quienGana(j1, aJugar, ia, cartaIA);
+				ia.tirarCartaJugada(cartaIA);
+				_ronda++;
+			}
+			
 		}
 	}
 	//juega la carta la IA
 	
 	else {
 		ia.tirarCartaJugada(aJugar);
+		
+		_ronda++;
 	}
 }
 
@@ -269,6 +288,9 @@ void Truco::cantarTruco(Jugador& j1, Jugador& ia, string quienCanta) {
 			cout << "Vos: No quiero." << endl;
 			ia.sumarPuntos(1);
 			cout << "Vos: " << j1.puntos() << ", IA: " << ia.puntos() << endl;
+			nuevaMano();
+			ia.cambiarMano();
+			j1.cambiarMano();
 		}
 		else {
 			cantarReTruco(j1, ia, "jugador");//aca se considera el caso en que la IA quiera cantar vale 4.
@@ -288,6 +310,9 @@ void Truco::cantarTruco(Jugador& j1, Jugador& ia, string quienCanta) {
 			cout << "IA: No quiero" << endl;
 			j1.sumarPuntos(1);
 			cout << "Vos: " << j1.puntos() << ", IA: " << ia.puntos() << endl;
+			nuevaMano();
+			ia.cambiarMano();
+			j1.cambiarMano();
 		}
 		else {
 			cantarReTruco(j1, ia, "ia");
@@ -311,6 +336,9 @@ void Truco::cantarReTruco(Jugador& j1, Jugador& ia, string quienCanta) {
 			j1.sumarPuntos(2);
 			estanEnTruco = false;
 			cout << "Vos: " << j1.puntos() << ", IA: " << ia.puntos() << endl;
+			nuevaMano();
+			ia.cambiarMano();
+			j1.cambiarMano();
 		}
 		else {
 			cantarVale4(j1, ia, "ia");
@@ -339,6 +367,9 @@ void Truco::cantarReTruco(Jugador& j1, Jugador& ia, string quienCanta) {
 			ia.sumarPuntos(2);
 			estanEnTruco = false;
 			cout << "Vos: " << j1.puntos() << ", IA: " << ia.puntos() << endl;
+			nuevaMano();
+			ia.cambiarMano();
+			j1.cambiarMano();
 		}
 		else {
 			cantarVale4(j1, ia, "jugador");
@@ -364,6 +395,9 @@ void Truco::cantarVale4(Jugador& j1, Jugador& ia, string quienCanta) {
 			estanEnTruco = false;
 			estanEnReTruco = false;
 			cout << "Vos: " << j1.puntos() << ", IA: " << ia.puntos() << endl;
+			nuevaMano();
+			ia.cambiarMano();
+			j1.cambiarMano();
 		}
 	}
 	//canta la IA
@@ -391,6 +425,9 @@ void Truco::cantarVale4(Jugador& j1, Jugador& ia, string quienCanta) {
 			estanEnTruco = false;
 			estanEnReTruco = false;
 			cout << "Vos: " << j1.puntos() << ", IA: " << ia.puntos() << endl;
+			nuevaMano();
+			ia.cambiarMano();
+			j1.cambiarMano();
 		}
 	}
 }

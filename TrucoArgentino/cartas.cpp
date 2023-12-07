@@ -26,7 +26,9 @@ string Carta::obtenerPalo() {
 }
 int Carta::obtenerValorRelativo() {
     int valorRelativo=0;
-    for (int i = 0; i < ordenDeValor.size(); i++) {
+    int valorCarta = this->obtenerValor();
+    string paloCarta = this->obtenerPalo();
+    for (int i = 0; i < ordenDeValor.size() && valorRelativo==0; i++) {
         for (int j = 0; j < ordenDeValor[i].size(); j++) {
             if ((this->obtenerValor() == ordenDeValor[i][j].obtenerValor()) && (this->obtenerPalo() == ordenDeValor[i][j].obtenerPalo())) {
                 valorRelativo = i;

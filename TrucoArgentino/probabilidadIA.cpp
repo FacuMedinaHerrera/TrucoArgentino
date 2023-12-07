@@ -150,7 +150,7 @@ int respuestaPrimeraMano() {
 	if (proba < 60) {//proba de respuesta envido
 		return 1;
 	}
-	else if (proba >= 60 < 90) {//proba de responder con una carta
+	else if (proba >= 60&& proba < 90) {//proba de responder con una carta
 		return 2;
 	}
 	else {
