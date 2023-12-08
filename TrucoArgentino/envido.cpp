@@ -163,9 +163,10 @@ int quienGanaEnvido(Jugador& j1, Jugador& j2) {
 }
 
 void cantarEnvido(Jugador& jugador, Jugador& ia, string quienCanto) {
-
+	
 	//si el envido lo canta la IA
 	if (quienCanto == "ia") {
+		ia.cantoEnvido = true;
 		cout << "IA: Envido!" << endl;
 		int eleccionJugador;
 		cout << "Cual es su respuesta?" << endl;
@@ -433,6 +434,7 @@ void cantarEnvido(Jugador& jugador, Jugador& ia, string quienCanto) {
 	}
 	//el que canto el envido fue el jugador
 	else {
+		jugador.cantoEnvido = true;
 		cout << "Vos: Envido!" << endl;
 		int eleccionIA = respuestaEnvido(5);
 		//IA quiere

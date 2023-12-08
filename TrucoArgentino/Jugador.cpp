@@ -11,7 +11,7 @@ int Jugador::puntos() {
 }
 void Jugador::sumarPuntos(int puntos) {
 	puntaje += puntos;
-	if (puntaje >= 15 && !(this->estaEnBuenas())) { // 15 porque son los puntos incluidos en las "Malas"
+	if (puntaje > 15 && !estaEnBuenas()) { // 15 porque son los puntos incluidos en las "Malas"
 		puntaje = puntaje - 15;
 		buenas = true;
 	}

@@ -25,6 +25,7 @@ public:
 	void ganoMano(int rondaACambiar);
 	void resetManos();
 	bool cantoAnteriorTruco = false;
+	bool cantoEnvido = false;
 	void vaciarManoJugador();
 
 private:

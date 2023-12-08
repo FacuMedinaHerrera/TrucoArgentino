@@ -101,7 +101,13 @@ void Truco::nuevaMano() {
 	estanEnTruco = false;
 	estanEnReTruco = false;
 	estanEnVale4 = false;
-	esParda = false;
+	esParda1 = false;
+	esParda2 = false;
+	esParda3 = false;
+	_j1.cantoEnvido = false;
+	_ia.cantoEnvido = false;
+	_j1.cantoAnteriorTruco = false;
+	_ia.cantoAnteriorTruco = false;
 	_ronda = 1;
 	_j1.resetManos();
 	_ia.resetManos();
@@ -149,9 +155,14 @@ void Truco::quienGana(Jugador& j1, Carta* cartaJ1, Jugador& ia, Carta* cartaIA) 
 		else if (j1.gano() && !ia.gano()) {
 			j1.cambiarGanadorRonda();
 		}
-		esParda = true;
+		//les pongo uno demas ya que la suma de la ronda se hace antes de cambiar la parda.
+		if (_ronda == 2)esParda1 = true;
+		if (_ronda == 3)esParda2 = true;
+		if (_ronda == 4)esParda3 = true;
 	}
-	if (_ronda == 1 && !esParda) {
+
+
+	if (_ronda == 1 && !esParda1) {
 		if (j1.gano()) {
 			j1.ganoMano(1);
 		}
@@ -159,7 +170,7 @@ void Truco::quienGana(Jugador& j1, Carta* cartaJ1, Jugador& ia, Carta* cartaIA) 
 			ia.ganoMano(1);
 		}
 	}
-	else if (_ronda == 2 && !esParda) {
+	else if (_ronda == 2 && !esParda2) {
 		if (j1.gano()) {
 			j1.ganoMano(2);
 		}
@@ -167,7 +178,7 @@ void Truco::quienGana(Jugador& j1, Carta* cartaJ1, Jugador& ia, Carta* cartaIA) 
 			ia.ganoMano(2);
 		}
 	}
-	else if(!esParda){
+	else if(!esParda3){
 		if (j1.gano()) {
 			j1.ganoMano(3);
 		}
@@ -188,7 +199,7 @@ void Truco::jugarCarta(Jugador& j1, Jugador& ia, Carta* aJugar, string quienLaJu
 			j1.tirarCartaJugada(aJugar);
 			int respuestaIA = respuestaPrimeraMano(); // las posibles respuestas son: Jugar una carta, cantar envido, cantar truco.
 			//se canta envido, solo si los puntos del jugador y de la IA estan en 0, de otra forma ya se canto anteriormente el envido.
-			if (respuestaIA == 1 && j1.puntos() == 0 && ia.puntos() == 0) {
+			if (respuestaIA == 1 && (!j1.cantoEnvido || !ia.cantoEnvido)) {
 				cout << "IA: Fuiste a la pesca?..." << endl;
 				cantarEnvido(j1, ia, "ia");
 				//luego del envido la IA juega una carta.
@@ -208,7 +219,7 @@ void Truco::jugarCarta(Jugador& j1, Jugador& ia, Carta* aJugar, string quienLaJu
 			}
 			//IA canta truco
 			else {
-				cantarTruco(j1, ia, "ia");
+				if(!estanEnAlgunaInstanciaTruco())cantarTruco(j1, ia, "ia");
 				//una vez que se canta el truco y se define que sucedio veo si se tira un carta o no.
 				//con que estemos en alguna instancia de truco, continua el juego.
 				if (estanEnAlgunaInstanciaTruco()) {
@@ -238,13 +249,18 @@ void Truco::jugarCarta(Jugador& j1, Jugador& ia, Carta* aJugar, string quienLaJu
 
 			//IA canta algun truco.
 			if (respuestaIA == 2) {
-				if (estanEnAlgunaInstanciaTruco()) {
-					if (estanEnInstanciaTruco())cantarReTruco(j1, ia, "ia");
-					if (estanEnInstanciaReTruco())cantarVale4(j1, ia, "ia");
+				if (estanEnAlgunaInstanciaTruco() && j1.cantoAnteriorTruco) {
+					if (estanEnInstanciaTruco()) { 
+						cantarReTruco(j1, ia, "ia");
+					}
+					else if (estanEnInstanciaReTruco()) { 
+						cantarVale4(j1, ia, "ia");
+					}
 				}
 				else {
 					cantarTruco(j1, ia, "ia");
 				}
+				
 			}
 			//luego de cantar algo, la ia debe jugar una carta en caso de llegar a una instancia de truco.
 			if ((estanEnAlgunaInstanciaTruco()&&respuestaIA==2)||respuestaIA==1) {
@@ -271,13 +287,11 @@ void Truco::cantarTruco(Jugador& j1, Jugador& ia, string quienCanta) {
 	if (quienCanta == "ia") {
 		cout << "IA: Truco!" << endl;
 		cout << "Que desea hacer?" << endl;
+		if (_ronda == 1)cout << "1. Quiero 2. No quiero 3.Retruco 4. Envido" << endl;
 		cout << "1. Quiero 2. No quiero 3.Retruco" << endl;
 		int respuesta;
 		cin >> respuesta;
-		while (1 > respuesta && respuesta > 3) {
-			cout << "Entrada invalida, ingrese nuevamente" << endl;
-			cin >> respuesta;
-		}
+		
 
 		if (respuesta == 1) {
 			cout << "Vos: Quiero." << endl;
@@ -292,15 +306,25 @@ void Truco::cantarTruco(Jugador& j1, Jugador& ia, string quienCanta) {
 			ia.cambiarMano();
 			j1.cambiarMano();
 		}
-		else {
+		else if(respuesta==3){
 			cantarReTruco(j1, ia, "jugador");//aca se considera el caso en que la IA quiera cantar vale 4.
+		}
+		else {
+			cout << "Vos: Sabes lo que viene primero?..." << endl;
+			if (!ia.cantoEnvido && !ia.cantoEnvido)cantarEnvido(j1, ia, "jugador");
 		}
 	}
 	//canta el jugador
 	else {
 		cout << "Vos: Truco..." << endl;
-		//la IA puede responder quiero, no quiero, o reTruco
-		int respuestaIA = respuestaTruco(3);
+		//la IA puede responder quiero, no quiero, o reTruco y si es ronda 1 puede cantar envido.
+		int respuestaIA;
+		if (_ronda == 1) {
+			respuestaIA = respuestaTruco(4);
+		}
+		else {
+			respuestaIA = respuestaTruco(3);
+		}
 		if (respuestaIA == 1) {
 			cout << "IA: Quiero" << endl;
 			j1.cantoAnteriorTruco = true;
@@ -314,8 +338,15 @@ void Truco::cantarTruco(Jugador& j1, Jugador& ia, string quienCanta) {
 			ia.cambiarMano();
 			j1.cambiarMano();
 		}
-		else {
+		else if(respuestaIA==3) {
 			cantarReTruco(j1, ia, "ia");
+		}
+		else {
+			
+			if (!j1.cantoEnvido&&!ia.cantoEnvido) {
+				cout << "IA: Sabes lo que viene primero?..." << endl;
+				cantarEnvido(j1, ia, "ia");
+			}
 		}
 	}
 }
@@ -328,6 +359,7 @@ void Truco::cantarReTruco(Jugador& j1, Jugador& ia, string quienCanta) {
 		if (respuestaIA == 1) {
 			cout << "IA: Quiero" << endl;
 			j1.cantoAnteriorTruco = true;
+			ia.cantoAnteriorTruco = false;
 			estanEnTruco = false;
 			estanEnReTruco = true;
 		}
@@ -359,6 +391,7 @@ void Truco::cantarReTruco(Jugador& j1, Jugador& ia, string quienCanta) {
 		if (respuesta == 1) {
 			cout << "Vos: Quiero." << endl;
 			ia.cantoAnteriorTruco = true;
+			j1.cantoAnteriorTruco = false;
 			estanEnReTruco = true;
 			estanEnTruco = false;
 		}
@@ -385,6 +418,7 @@ void Truco::cantarVale4(Jugador& j1, Jugador& ia, string quienCanta) {
 		if (respuestaIA == 1) {
 			cout << "IA: Quiero." << endl;
 			j1.cantoAnteriorTruco = true;
+			ia.cantoAnteriorTruco = false;
 			estanEnReTruco = false;
 			estanEnTruco = false;
 			estanEnVale4 = true;
@@ -415,6 +449,7 @@ void Truco::cantarVale4(Jugador& j1, Jugador& ia, string quienCanta) {
 		if (respuesta == 1) {
 			cout << "Vos: Obvio, quiero." << endl;
 			ia.cantoAnteriorTruco = true;
+			j1.cantoAnteriorTruco = false;
 			estanEnVale4 = true;
 			estanEnReTruco = false;
 			estanEnTruco = false;

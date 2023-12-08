@@ -31,7 +31,9 @@ public:
 	void cantarReTruco(Jugador& j1, Jugador& ia, string quienCanta);
 	void cantarVale4(Jugador& j1, Jugador& ia, string quienCanta);
 	void nuevaMano();
-	bool esParda = false;
+	bool esParda1 = false;
+	bool esParda2 = false;
+	bool esParda3 = false;
 	bool estanEnAlgunaInstanciaTruco();
 	bool estanEnInstanciaTruco();
 	bool estanEnInstanciaReTruco();
