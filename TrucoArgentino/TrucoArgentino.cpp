@@ -44,10 +44,18 @@ int main()
 						cout << "1. Cantar envido 2.Jugar una carta 3. Cantar truco" << endl;
 						int decision;
 						cin >> decision;
+						while (decision < 1 && decision>3) {
+							cout << "Entrada invalida, ingrese nuevamente" << endl;
+							cin >> decision;
+						}
 						if (decision == 1) {
 							cantarEnvido(j1, ia, "jugador");//esto resuelve todo el envido.
 							cout << "Que quieres hacer?\n" << "1. Jugar carta 2. Cantar truco" << endl;
 							cin >> decision;
+							while (decision < 1 || decision>2) {
+								cout << "Entrada invalida, ingrese nuevamente" << endl;
+								cin >> decision;
+							}
 							if (decision == 1) {
 								int cartaAJugar;
 								cout << "Que carta quieres jugar?" << endl;
@@ -57,6 +65,10 @@ int main()
 								}
 								cout << endl;
 								cin >> cartaAJugar;
+								while (cartaAJugar<1 && cartaAJugar>j1.mano().size()) {
+									cout << "Entrada invalida, ingrese nuevamente" << endl;
+									cin >> cartaAJugar;
+								}
 								truco.jugarCarta(j1, ia, j1.mano()[cartaAJugar - 1], "jugador");
 
 							}
@@ -72,6 +84,10 @@ int main()
 									}
 									cout << endl;
 									cin >> cartaAJugar;
+									while (cartaAJugar<1 && cartaAJugar>j1.mano().size()) {
+										cout << "Entrada invalida, ingrese nuevamente" << endl;
+										cin >> cartaAJugar;
+									}
 									truco.jugarCarta(j1, ia, j1.mano()[cartaAJugar - 1], "jugador");
 								}
 								
@@ -87,7 +103,10 @@ int main()
 							}
 							cout << endl;
 							cin >> cartaAJugar;
-
+							while (cartaAJugar<1 && cartaAJugar>j1.mano().size()) {
+								cout << "Entrada invalida, ingrese nuevamente" << endl;
+								cin >> cartaAJugar;
+							}
 
 							truco.jugarCarta(j1, ia, j1.mano()[cartaAJugar - 1], "jugador");
 
@@ -104,6 +123,10 @@ int main()
 								}
 								cout << endl;
 								cin >> cartaAJugar;
+								while (cartaAJugar<1 && cartaAJugar>j1.mano().size()) {
+									cout << "Entrada invalida, ingrese nuevamente" << endl;
+									cin >> cartaAJugar;
+								}
 								truco.jugarCarta(j1, ia, j1.mano()[cartaAJugar - 1], "jugador");
 							}
 							//else {si no estan en truco, termina la ronda.}
@@ -140,6 +163,10 @@ int main()
 							}
 							int decisionJugador;
 							cin >> decisionJugador;
+							while ((decisionIA==1 && (decisionJugador < 1 || decisionJugador>2))|| (decisionIA==2 &&(decisionJugador<1 || decisionJugador>3))) {
+								cout << "Entrada invalida, ingrese nuevamente" << endl;
+								cin >> decisionJugador;
+							}
 							if (decisionJugador == 3)cantarEnvido(j1, ia, "jugador");
 							if (decisionJugador == 2)truco.cantarTruco(j1, ia, "jugador");
 							//una vez que se resuelve el envido se juega carta o si se canto truco y se acepto, se juega carta.
@@ -185,10 +212,18 @@ int main()
 								if (truco.estanEnInstanciaTruco()) {
 									cout << "1. Jugar Carta 2.Cantar Re Truco" << endl;
 									cin >> decision;
+									while (decision < 1 || decision>2) {
+										cout << "Entrada invalida, ingrese nuevamente" << endl;
+										cin >> decision;
+									}
 								}
 								else if (truco.estanEnInstanciaReTruco()) {
 									cout << "1. Jugar Carta 2.Cantar Vale 4"<<endl;
 									cin >> decision;
+									while (decision < 1 || decision>2) {
+										cout << "Entrada invalida, ingrese nuevamente" << endl;
+										cin >> decision;
+									}
 								}
 
 							}
@@ -210,6 +245,10 @@ int main()
 								}
 								cout << endl;
 								cin >> cartaAJugar;
+								while (cartaAJugar<1 && cartaAJugar>j1.mano().size()) {
+									cout << "Entrada invalida, ingrese nuevamente" << endl;
+									cin >> cartaAJugar;
+								}
 								Carta* cartaJugador = j1.mano()[cartaAJugar - 1];
 								truco.jugarCarta(j1, ia, cartaJugador, "jugador");
 							}
@@ -343,10 +382,18 @@ int main()
 							if (truco.estanEnInstanciaTruco()) {
 								cout << "Que va a hacer?\n1.Jugar carta 2.Cantar retruco" << endl;
 								cin >> decisionJugador;
+								while (decisionJugador<1 || decisionJugador>2) {
+									cout << "Entrada invalida, ingrese nuevamente" << endl;
+									cin >> decisionJugador;
+								}
 							}
 							else if (truco.estanEnInstanciaReTruco()) {
 								cout << "Que va a hacer?\n1.Jugar carta 2.Cantar Vale 4" << endl;
 								cin >> decisionJugador;
+								while (decisionJugador < 1 || decisionJugador>2) {
+									cout << "Entrada invalida, ingrese nuevamente" << endl;
+									cin >> decisionJugador;
+								}
 							}
 							//estan en vale 4, solo se accede si no hubo decision.
 							else {
@@ -358,6 +405,10 @@ int main()
 								}
 								int cartaAJugar;
 								cin >> cartaAJugar;
+								while (cartaAJugar<1 || cartaAJugar>j1.mano().size()) {
+									cout << "Entrada invalida, ingrese nuevamente" << endl;
+									cin >> cartaAJugar;
+								}
 								Carta* cartaJugador = j1.mano()[cartaAJugar - 1];
 
 								truco.jugarCarta(j1, ia, cartaElegidaIA, "ia");
@@ -390,7 +441,7 @@ int main()
 								}
 								int eleccionJugador;
 								cin >> eleccionJugador;
-								while (1 > eleccionJugador && eleccionJugador > 2) {
+								while (1 > eleccionJugador || eleccionJugador > 2) {
 									cout << "Entrada invalida, ingrese nuevamente." << endl;
 									cin >> eleccionJugador;
 								}
@@ -488,7 +539,7 @@ int main()
 								cout << endl;
 								int eleccionJugador;
 								cin >> eleccionJugador;
-								while (1 > eleccionJugador && eleccionJugador > 2) {
+								while (1 > eleccionJugador || eleccionJugador > 2) {
 									cout << "Entrada invalida, ingrese nuevamente." << endl;
 									cin >> eleccionJugador;
 								}
@@ -513,7 +564,7 @@ int main()
 									}
 									int eleccionJugador;
 									cin >> eleccionJugador;
-									while (1 > eleccionJugador && eleccionJugador > 2) {
+									while (1 > eleccionJugador || eleccionJugador > 2) {
 										cout << "Entrada invalida, ingrese nuevamente." << endl;
 										cin >> eleccionJugador;
 									}
@@ -556,6 +607,10 @@ int main()
 								cout << "1.Jugar carta 2.Cantar truco" << endl;
 								int decision;
 								cin >> decision;
+								while (decision < 1 || decision>2) {
+									cout << "Entrada invalida, ingrese nuevamente" << endl;
+									cin >> decision;
+								}
 								if (decision == 2) {
 									truco.cantarTruco(j1, ia, "jugador");
 								}
@@ -568,7 +623,7 @@ int main()
 									cout << endl;
 									int eleccionJugador;
 									cin >> eleccionJugador;
-									while (1 > eleccionJugador && eleccionJugador > 2) {
+									while (1 > eleccionJugador || eleccionJugador > 2) {
 										cout << "Entrada invalida, ingrese nuevamente." << endl;
 										cin >> eleccionJugador;
 									}
@@ -593,12 +648,20 @@ int main()
 										cout << "1. Jugar carta 2.Cantar Re Truco" << endl;
 										int decision;
 										cin >> decision;
+										while (decision < 1 || decision>2) {
+											cout << "Entrada invalida, ingrese nuevamente" << endl;
+											cin >> decision;
+										}
 										if (decision == 2)truco.cantarReTruco(j1, ia, "jugador");									
 									}
 									else if (truco.estanEnInstanciaReTruco()) {
 										cout << "1. Jugar carta 2.Cantar Vale 4" << endl;
 										int decision;
 										cin >> decision;
+										while (decision < 1 || decision>2) {
+											cout << "Entrada invalida, ingrese nuevamente" << endl;
+											cin >> decision;
+										}
 										if (decision == 2)truco.cantarVale4(j1, ia, "jugador");										
 									}									
 									cout << "Que carta quieres jugar?" << endl;
@@ -609,7 +672,7 @@ int main()
 									cout << endl;
 									int eleccionJugador;
 									cin >> eleccionJugador;
-									while (1 > eleccionJugador && eleccionJugador > 2) {
+									while (1 > eleccionJugador || eleccionJugador > 2) {
 										cout << "Entrada invalida, ingrese nuevamente." << endl;
 										cin >> eleccionJugador;
 									}
@@ -669,10 +732,18 @@ int main()
 							if (truco.estanEnInstanciaTruco()) {
 								cout << "1. Jugar Carta 2.Cantar Re Truco" << endl;
 								cin >> decision;
+								while (decision < 1 || decision>2) {
+									cout << "Entrada invalida, ingrese nuevamente" << endl;
+									cin >> decision;
+								}
 							}
 							else if (truco.estanEnInstanciaReTruco()) {
 								cout << "1. Jugar Carta 2.Cantar Vale 4";
 								cin >> decision;
+								while (decision < 1 || decision>2) {
+									cout << "Entrada invalida, ingrese nuevamente" << endl;
+									cin >> decision;
+								}
 							}
 							//estan en vale4. Se accede solo cuando no hay decision
 							else {
@@ -761,10 +832,18 @@ int main()
 							if (truco.estanEnInstanciaTruco()) {
 								cout << "Que va a hacer?\n1.Jugar carta 2.Cantar retruco" << endl;
 								cin >> decisionJugador;
+								while (decisionJugador < 1 || decisionJugador>2) {
+									cout << "Entrada invalida, ingrese nuevamente" << endl;
+									cin >> decisionJugador;
+								}
 							}
 							else if (truco.estanEnInstanciaReTruco()) {
 								cout << "Que va a hacer?\n1.Jugar carta 2.Cantar Vale 4" << endl;
 								cin >> decisionJugador;
+								while (decisionJugador < 1 || decisionJugador>2) {
+									cout << "Entrada invalida, ingrese nuevamente" << endl;
+									cin >> decisionJugador;
+								}
 							}
 							//estan en vale 4, solo se accede si no hubo decision.
 							else {

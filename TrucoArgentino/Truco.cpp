@@ -291,6 +291,10 @@ void Truco::cantarTruco(Jugador& j1, Jugador& ia, string quienCanta) {
 		cout << "1. Quiero 2. No quiero 3.Retruco" << endl;
 		int respuesta;
 		cin >> respuesta;
+		while (respuesta < 1 || respuesta>3) {
+			cout << "Entrada invalida, ingrese nuevamente" << endl;
+			cin >> respuesta;
+		}
 		
 
 		if (respuesta == 1) {
@@ -383,7 +387,7 @@ void Truco::cantarReTruco(Jugador& j1, Jugador& ia, string quienCanta) {
 		cout << "1. Quiero 2. No quiero 3.Vale 4" << endl;
 		int respuesta;
 		cin >> respuesta;
-		while (1 > respuesta && respuesta > 3) {
+		while (1 > respuesta || respuesta > 3) {
 			cout << "Entrada invalida, ingrese nuevamente" << endl;
 			cin >> respuesta;
 		}
