@@ -199,7 +199,7 @@ void Truco::jugarCarta(Jugador& j1, Jugador& ia, Carta* aJugar, string quienLaJu
 			j1.tirarCartaJugada(aJugar);
 			int respuestaIA = respuestaPrimeraMano(); // las posibles respuestas son: Jugar una carta, cantar envido, cantar truco.
 			//se canta envido, solo si los puntos del jugador y de la IA estan en 0, de otra forma ya se canto anteriormente el envido.
-			if (respuestaIA == 1 && (!j1.cantoEnvido || !ia.cantoEnvido)) {
+			if (respuestaIA == 1 && !(j1.cantoEnvido || ia.cantoEnvido)) {
 				cout << "IA: Fuiste a la pesca?..." << endl;
 				cantarEnvido(j1, ia, "ia");
 				//luego del envido la IA juega una carta.
