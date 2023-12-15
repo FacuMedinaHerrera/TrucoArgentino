@@ -591,7 +591,7 @@ void cantarEnvido(Jugador& jugador, Jugador& ia, string quienCanto) {
 				//IA no quiere la falta
 				else {
 					cout << "IA: No quiero." << endl;
-					ia.sumarPuntos(4);
+					jugador.sumarPuntos(4);
 					cout << "Vos: " << jugador.puntos() << ", IA: " << ia.puntos() << endl;
 				}
 			}
